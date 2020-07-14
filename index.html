@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input id="s" type="text" placeholder="s"/>
+  <input id="t" type="text" placeholder="t"/>
+  <input id="v" type="text" placeholder="v"/>
+  <input type="button" value="Calc"/>
+  <div><span>Your Velocity Is </span><span id="result"></span></div>
+  <script>
+    window.addEventListener('load', (eventArgs) => {
+      /* const calcVelocity = (s = 0, t = 0) => {
+        v.value = s / t
+        result.innerText = 'Your Velocity Is ' + v.value
+      }
+      s.oninput = (eventArgs) => {
+        // console.log(s.value)
+        calcVelocity(s.value, t.value)
+      }
+      t.oninput = (eventArgs) => {
+        // console.log(t.value)
+        calcVelocity(s.value, t.value)
+      }
+      v.oninput = (eventArgs) => {
+        s.value = v.value * t.value
+        result.innerText = 'Your Velocity Is ' + v.value
+      } */
+      let processing = false
+      let newViewStateCalculated = false
+      const viewState = {
+        s: 0,
+        t: 0,
+        v: 0,
+        result: 0
+      }
+      const viewStateOld = {
+        s: 0,
+        t: 0,
+        v: 0,
+        result: 0
+      }
+      const wathViewStateProp = (propName, oldVlue, newValue) => {
+        
+        switch (propName) {
+          case 's':
+          case 't':
+            console.log('propName = ' + propName, 's = ' + viewState.s, ' + t = ' + viewState.t)
+            viewStateOld.v = viewState.v = viewState.s / viewState.t
+            break
+          case 'v':
+          console.log('propName = ' + propName, 'v = ' + viewState.v, ' + t = ' + viewState.t)
+          viewStateOld.s = viewState.s = viewState.v * viewState.t
+            break
+          default:
+            break
+        }
+        viewStateOld.result = viewState.result = viewState.v
+        s.value = viewState.s
+        t.value = viewState.t
+        v.value = viewState.v
+        result.innerText = viewState.result
+        processing = false
+        newViewStateCalculated = true
+      }
+      setInterval(() => {
+        console.log('watch')
+        for (const key in viewStateOld) {
+          if (viewStateOld.hasOwnProperty(key) && !processing && !newViewStateCalculated) {
+            const oldValue = viewStateOld[key]
+            if (viewState[key] !== oldValue) {
+              processing = true
+              viewStateOld[key] = viewState[key]
+              wathViewStateProp(key, oldValue, viewState[key])
+            }
+          }
+        }
+      }, 250)
+      document.querySelectorAll('#s, #t, #v').forEach((input) => {
+        input.oninput = (eventArgs) => {
+          console.log(eventArgs.target.id)
+          if (!processing) {
+            newViewStateCalculated = false
+            viewState[eventArgs.target.id] = eventArgs.target.value
+          }
+        }
+      })
+    })
+  </script>
+</body>
+</html>
